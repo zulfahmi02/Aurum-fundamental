@@ -22,8 +22,10 @@ export async function handler(request: Request) {
       const raw = await response.text(); return raw ? JSON.parse(raw) : null;
     } finally { clearTimeout(timer); }
   }
+  let leased = false;
   try {
     if (!await db('rpc/aurum_auto_acquire', 'POST', {})) return Response.json({ status: 'already-running' });
+    leased = true;
     const rows = await db('aurum_auto_calendar?id=eq.weekly&select=payload,macro,macro_attempted_at,attempted_at,error,fed,fed_attempted_at,macro_error,release_attempts,support') as {
       payload: unknown; macro: unknown; macro_attempted_at: string | null; attempted_at: string | null; error: string | null;
       fed: unknown; fed_attempted_at: string | null; macro_error: string | null; release_attempts: Record<string, string> | null;
@@ -69,7 +71,13 @@ export async function handler(request: Request) {
       db(`aurum_auto_outcomes?select=event_id&captured_at=gte.${encodeURIComponent(after)}&limit=200`) as Promise<{ event_id: string }[]>,
     ]);
     const settled = new Set(savedOutcomes.map(o => o.event_id));
-    const preparations = latestPreparation(savedReports.map(r => readAutoReport(r.payload)));
+    // One unreadable archived report (e.g. written by an older rule version) must not stop
+    // new reports from being published. It is skipped here and left untouched in the archive.
+    let unreadable = 0;
+    const preparations = latestPreparation(savedReports.flatMap(r => {
+      try { return [readAutoReport(r.payload)]; } catch { unreadable++; return []; }
+    }));
+    if (unreadable) console.error(`Skipped ${unreadable} unreadable archived report(s)`);
     const attempts: Record<string, string> = {};
     const outcomes: AutoOutcome[] = [];
     for (const report of preparations) {
@@ -109,5 +117,9 @@ export async function handler(request: Request) {
   } catch (e) {
     console.error(e instanceof Error ? e.message : 'Worker failure');
     return new Response('Worker failed; inspect function logs', { status: 500 });
+  } finally {
+    // Release the lease so the next scheduled run is not blocked for the full 180 seconds.
+    // The lease still expires by itself if this request is killed before reaching here.
+    if (leased) await db('aurum_auto_locks?id=eq.worker', 'PATCH', { until_at: '1970-01-01T00:00:00Z' }, 'return=minimal').catch(() => {});
   }
 }

@@ -133,3 +133,11 @@ Penerapan (sekali):
 4. `node scripts/check-automatic.mjs` memeriksa pembacaan publik tabel harga, penolakan tulis anonim, dan penolakan function tanpa secret.
 
 Tes: `npm test` (parser, jendela waktu, validasi catatan, evaluasi, rekap) dan `npm run test:worker` (auth, idle, satu quote per leg, retry, quote basi ditolak). Parser juga dicoba terhadap respons Swissquote nyata 12 November 2026. Pencatatan pada rilis nyata belum pernah terjadi dan perlu dipantau pada event pertama setelah penerapan.
+
+## Ketahanan worker laporan — 12 November 2026
+
+Kode sudah ditulis dan lulus tes lokal. **Belum diterapkan**: perlu deploy ulang `auto-reports` dan menjalankan ulang `supabase/schedules/automatic_reports.sql`.
+
+- Cron `aurum-auto-reports` menjadi setiap dua menit (sebelumnya lima). Tahap T−10 menit kini punya tiga kesempatan sebelum cutoff T−5 menit, bukan satu. Jadwal tahap dan ID laporan tidak berubah, sehingga arsip lama tetap terbaca. Permintaan ke penyedia data tetap dibatasi oleh timestamp tersimpan, bukan oleh frekuensi cron.
+- Worker melepas lease setelah selesai, baik berhasil maupun gagal. Lease 180 detik tetap berlaku bila proses terhenti sebelum sempat melepas. Jika pelepasan gagal, worker hanya kembali ke perilaku lama (run berikutnya menunggu lease habis).
+- Laporan arsip yang tidak lolos validasi dilewati dan dicatat di log function; sebelumnya satu baris seperti itu menggagalkan seluruh run. Baris arsipnya tidak diubah atau dihapus. Aplikasi juga melewati baris tersebut saat membaca dari server.

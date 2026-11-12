@@ -10,7 +10,7 @@ Deno.test('worker authentication, throttling, immutable snapshots and upstream f
   const saved = env.map(k => Deno.env.get(k));
   Deno.env.set(env[0], 'test-only-secret-with-at-least-32-characters');
   Deno.env.set(env[1], 'https://example.invalid'); Deno.env.set(env[2], 'test-only-key');
-  let calls = 0, calendars = 0, macroCalls = 0, failCalendar = false, failContextWrite = false, acquired = true;
+  let calls = 0, releases = 0, calendars = 0, macroCalls = 0, failCalendar = false, failContextWrite = false, acquired = true;
   let cached: Record<string, unknown> | null = null;
   const snapshots = new Map<string, unknown>();
   const contextHistory: unknown[] = [];
@@ -24,6 +24,7 @@ Deno.test('worker authentication, throttling, immutable snapshots and upstream f
     if (url.includes('api.bls.gov')) { macroCalls++; return new Response('Unavailable', { status: 503 }); }
     if (url.includes('federalreserve.gov') || url.includes('fred.stlouisfed.org') || url.includes('adpemploymentreport.com')) return new Response('Unavailable', { status: 503 });
     if (url.endsWith('rpc/aurum_auto_acquire')) return Response.json(acquired);
+    if (url.includes('aurum_auto_locks')) { check(init?.method === 'PATCH', 'Lease is only released, never created here'); releases++; return new Response(null, { status: 204 }); }
     if (url.includes('aurum_auto_calendar')) {
       if (init?.method === 'POST') { cached = JSON.parse(String(init.body)); return new Response(null, { status: 204 }); }
       return Response.json(cached ? [cached] : []);
@@ -46,6 +47,7 @@ Deno.test('worker authentication, throttling, immutable snapshots and upstream f
     check((await handler(new Request('https://example.invalid/worker'))).status === 401, 'Reject anonymous request');
     check(calls === 0, 'Unauthorized request cannot access upstream/database');
     check((await handler(request())).status === 200, 'Worker completes despite BLS failure');
+    check(releases === 1, 'Lease released after a completed run');
     check(snapshots.size === 1 && calendars === 1 && macroCalls === 1, 'One report and one request per provider');
     check(contextHistory.length === 1, 'Archive the observed support version even when providers fail');
     const before = JSON.stringify([...snapshots]);
@@ -64,11 +66,14 @@ Deno.test('worker authentication, throttling, immutable snapshots and upstream f
     contextRow.support.checkedAt = Date.now() - 2 * 3600000;
     contextRow.support.series.forEach(r => { r.attemptedAt = contextRow.support.checkedAt; });
     const oldCache = JSON.stringify(cached); failContextWrite = true;
+    const released = releases;
     check((await handler(request())).status === 500, 'Context history write failure must fail worker');
+    check(releases === released + 1, 'Lease released after a failed run');
     check(JSON.stringify(cached) === oldCache, 'Failed history archive cannot publish a healthy cache heartbeat');
     const count = calls; acquired = false;
     check((await (await handler(request())).json()).status === 'already-running', 'Lease prevents overlapping workers');
     check(calls === count + 1, 'No provider requests without lease');
+    check(releases === released + 1, 'A run that did not get the lease must not release it');
   } finally {
     globalThis.fetch = original;
     env.forEach((k, i) => saved[i] === undefined ? Deno.env.delete(k) : Deno.env.set(k, saved[i]!));
@@ -97,6 +102,7 @@ Deno.test('worker publishes a reproducible experimental PPI bias and never rewri
   globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
     const url = String(input);
     if (url.endsWith('rpc/aurum_auto_acquire')) return Response.json(true);
+    if (url.includes('aurum_auto_locks')) return new Response(null, { status: 204 });
     if (url.includes('aurum_auto_calendar')) {
       if (init?.method === 'POST') { cached = JSON.parse(String(init.body)); return new Response(null, { status: 204 }); }
       return Response.json([cached]);
@@ -116,8 +122,9 @@ Deno.test('worker publishes a reproducible experimental PPI bias and never rewri
   }) as typeof fetch;
   try {
     const request = () => new Request('https://example.invalid/worker', { method: 'POST', headers: { 'x-aurum-secret': Deno.env.get(env[0])! } });
-    check((await handler(request())).status === 200, 'Worker saves directional report');
-    check(snapshots.size === 1, 'Exactly one current stage');
+    snapshots.set('legacy', { payload: { version: 1, id: 'legacy', note: 'unreadable archived row' } });
+    check((await handler(request())).status === 200, 'Unreadable archived report does not stop the worker');
+    check(snapshots.size === 2, 'Exactly one current stage published next to the untouched archive row');
     const frozen = JSON.stringify([...snapshots]);
     check((await handler(request())).status === 200, 'Retry succeeds with directional snapshot validation');
     check(JSON.stringify([...snapshots]) === frozen, 'Direction/reasons/timestamp immutable on retry');
@@ -149,6 +156,7 @@ Deno.test('worker records a later BLS period separately without changing prepara
   globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
     const url = String(input);
     if (url.endsWith('rpc/aurum_auto_acquire')) return Response.json(true);
+    if (url.includes('aurum_auto_locks')) return new Response(null, { status: 204 });
     if (url.includes('aurum_auto_calendar')) {
       if (init?.method === 'POST') { cached = JSON.parse(String(init.body)); return new Response(null, { status: 204 }); }
       return Response.json([cached]);

@@ -69,7 +69,8 @@ export function AutomaticPanel({ now }: { now: number }) {
               ? 'Backend belum diperbarui lebih dari 10 menit; penjadwalan perlu diperiksa.' : 'Backend berjalan. Laporan terjadwal tetap diproses saat aplikasi ditutup.');
           } else if (active) setServerStatus('Backend otomatis belum tersedia atau tidak dapat diakses. Sementara ini pembaruan berjalan saat aplikasi terbuka.');
           if (reportResult.status === 'fulfilled' && !reportResult.value.error) {
-            const remote = (reportResult.value.data ?? []).map(r => readAutoReport(r.payload)).filter(r => r.generatedAt <= stamp && r.origin === 'server');
+            // One unreadable archived report must not hide the rest.
+            const remote = (reportResult.value.data ?? []).flatMap(r => { try { return [readAutoReport(r.payload)]; } catch { return []; } }).filter(r => r.generatedAt <= stamp && r.origin === 'server');
             // A real server snapshot replaces the corresponding on-device preview, never vice versa.
             const map = new Map(history.map(r => [r.id, r]));
             remote.forEach(r => map.set(r.id, r));

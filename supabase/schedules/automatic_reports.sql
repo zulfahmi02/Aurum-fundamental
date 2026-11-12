@@ -14,7 +14,9 @@ begin
 end $$;
 
 -- Named job: repeated setup updates this job rather than creating duplicate workers.
-select cron.schedule('aurum-auto-reports', '*/5 * * * *', $job$
+-- Every two minutes: each report stage, including T−10 minutes with its T−5 minute cutoff,
+-- gets several attempts. Providers are throttled by stored timestamps, not by this cadence.
+select cron.schedule('aurum-auto-reports', '*/2 * * * *', $job$
   select net.http_post(
     url := (select decrypted_secret from vault.decrypted_secrets where name = 'aurum_project_url') || '/functions/v1/auto-reports',
     headers := jsonb_build_object('Content-Type', 'application/json', 'x-aurum-secret',
