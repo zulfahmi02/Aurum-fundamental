@@ -144,7 +144,7 @@ Kode sudah ditulis dan lulus tes lokal. **Belum diterapkan**: perlu deploy ulang
 
 ## Pengingat news otomatis — 12 November 2026
 
-- Tombol **Aktifkan pengingat otomatis** di panel utama menjadwalkan notifikasi lokal T−5 jam dan T−15 menit untuk setiap NFP, CPI, PPI, dan FOMC pada kalender otomatis. Terpisah dari pengingat rencana NFP manual (awalan ID dan channel berbeda); mengubah yang satu tidak menyentuh yang lain.
+- Tombol **Aktifkan pengingat otomatis** di panel utama menjadwalkan notifikasi lokal pagi 07.05 WIB (lima menit setelah laporan pagi backend; untuk FOMC dini hari, pagi sebelumnya), T−5 jam, dan T−15 menit untuk setiap NFP, CPI, PPI, dan FOMC pada kalender otomatis. Terpisah dari pengingat rencana NFP manual (awalan ID dan channel berbeda); mengubah yang satu tidak menyentuh yang lain.
 - Setiap aplikasi dibuka atau kalender berubah, jadwal dicocokkan ulang: pengingat untuk event yang bergeser/hilang dibatalkan, yang belum ada ditambahkan. ID stabil, jadi pencocokan berulang tidak menggandakan notifikasi.
 - Pengingat **tidak memuat bias**: bias dibuat backend belakangan dan notifikasi lokal tidak bisa mengambilnya. Notifikasi hanya mengajak membuka aplikasi.
 - Kalender hanya mencakup minggu berjalan. Jika aplikasi tidak dibuka sama sekali pada suatu minggu, news minggu itu tidak terjadwal.

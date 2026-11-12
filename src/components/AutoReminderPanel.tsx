@@ -42,7 +42,7 @@ export function AutoReminderPanel({ events }: { events: NewsEvent[] | null }) {
   }
   return <View style={s.box}>
     <Text style={s.gold}>Pengingat news otomatis</Text>
-    <Text style={s.text}>{enabled ? `Aktif · ${count} pengingat terjadwal untuk kalender minggu ini.` : 'Belum aktif.'} Dikirim T−5 jam dan T−15 menit sebelum NFP, CPI, PPI, dan FOMC.</Text>
+    <Text style={s.text}>{enabled ? `Aktif · ${count} pengingat terjadwal untuk kalender minggu ini.` : 'Belum aktif.'} Dikirim pagi 07.05 WIB, T−5 jam, dan T−15 menit sebelum NFP, CPI, PPI, dan FOMC.</Text>
     <Text style={s.muted}>Pengingat hanya mengajak membuka aplikasi dan tidak memuat bias. Jadwal diperbarui setiap aplikasi dibuka; buka aplikasi minimal sekali seminggu agar news minggu itu terjadwal. Android dapat menunda notifikasi beberapa menit.</Text>
     <Pressable accessibilityRole="button" disabled={busy || enabled === null} style={s.button} onPress={() => { void change(!enabled); }}>
       <Text style={s.gold}>{enabled ? 'Matikan pengingat otomatis' : 'Aktifkan pengingat otomatis'}</Text>

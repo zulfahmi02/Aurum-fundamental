@@ -1,3 +1,5 @@
+import { reportSchedule } from './automatic.ts';
+
 export function reminderPlan(release: number, now: number) {
   if (!Number.isSafeInteger(release) || release <= 0 || !Number.isFinite(now)) return [];
   return [
@@ -14,11 +16,19 @@ export const AUTO_REMINDER_PREFIX = 'aurum-auto-';
 const wib = (t: number) => new Date(t + 7 * 3600000).toISOString().slice(11, 16).replace(':', '.');
 export function autoReminderPlan(events: readonly { id: string; kind: string; release: number }[], now: number) {
   if (!Number.isFinite(now)) return [];
-  return events.filter(e => Number.isSafeInteger(e.release) && e.release > 0).flatMap(e => [
-    { id: `${AUTO_REMINDER_PREFIX}${e.id}-prepare`, at: e.release - 5 * 3600000, title: `${e.kind} hari ini pukul ${wib(e.release)} WIB`,
+  return events.filter(e => Number.isSafeInteger(e.release) && e.release > 0).flatMap(e => {
+    // Same morning as the backend's 07.00 WIB report; for an after-midnight FOMC that is the day before.
+    const morning = reportSchedule(e.release).find(s => s.stage === 'morning')!.at;
+    const sameDay = Math.floor((morning + 7 * 3600000) / 86400000) === Math.floor((e.release + 7 * 3600000) / 86400000);
+    return [
+    // Five minutes after the hour, so the backend's morning report already exists when the app is opened.
+    { id: `${AUTO_REMINDER_PREFIX}${e.id}-morning`, at: morning + 5 * 60000, title: `${e.kind} ${sameDay ? 'hari ini' : 'besok'} pukul ${wib(e.release)} WIB`,
+      body: 'Laporan pagi tersedia di Aurum. Pengingat ini bukan sinyal entry.' },
+    { id: `${AUTO_REMINDER_PREFIX}${e.id}-prepare`, at: e.release - 5 * 3600000, title: `${e.kind} 5 jam lagi · ${wib(e.release)} WIB`,
       body: 'Laporan T−5 jam tersedia di Aurum. Pengingat ini bukan sinyal entry.' },
     // Fifteen minutes, not ten: Android may delay a notification by a few minutes.
     { id: `${AUTO_REMINDER_PREFIX}${e.id}-check`, at: e.release - 15 * 60000, title: `${e.kind} 15 menit lagi`,
       body: `Laporan terakhir terbit sekitar ${wib(e.release - 10 * 60000)} WIB. Batas entry ${wib(e.release - 5 * 60000)} WIB. Buka Aurum untuk melihat bias; pengingat ini bukan sinyal.` },
-  ]).filter(r => r.at > now).sort((a, b) => a.at - b.at);
+    ];
+  }).filter(r => r.at > now).sort((a, b) => a.at - b.at);
 }
