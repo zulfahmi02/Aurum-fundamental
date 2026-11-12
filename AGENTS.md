@@ -21,13 +21,19 @@ npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
 ```
 
-Run lint and typecheck before declaring any task done.
+Run lint, typecheck and `npm run test:all` before declaring any task done.
 
 ## Navigation & Routing
 
-- Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.
-- Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
-- Docs: https://docs.expo.dev/router/introduction.md
+- This app is currently a **single screen**: `index.ts` registers `App.tsx`, which renders panels from `src/components/`. Expo Router is **not installed** and there is no `src/app/` directory. Do not add routes or import from `expo-router` unless the task is to introduce navigation.
+- If a second screen is ever needed, add Expo Router then (`npx expo install expo-router`, routes in `src/app/`). Docs: https://docs.expo.dev/router/introduction.md
+
+## Project layout
+
+- `src/automatic*.ts` and `src/reminderPlan.ts` are shared by the app and the Supabase Edge Functions (Deno). Keep them free of React Native and Expo imports, and keep the `.ts` extension on their relative imports.
+- `supabase/functions/` holds the scheduled workers; `supabase/migrations/` and `supabase/schedules/` are applied by hand in the Supabase SQL Editor.
+- Stored reports are re-validated by recomputing the bias (`readAutoReport`). Changing rule logic or reason text in `src/automaticBias.ts` makes archived reports unreadable; add a new versioned model instead of editing `fundamental-scenario-v1`.
+- `npm run test:all` runs the app tests, the Deno worker tests and the Python tests.
 
 ## Building with EAS
 

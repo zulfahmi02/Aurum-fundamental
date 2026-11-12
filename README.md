@@ -14,6 +14,8 @@ Buka dengan versi Expo Go yang kompatibel dengan SDK proyek pada Android, atau j
 ## Sudah tersedia
 
 - Panel laporan otomatis tanpa input: kalender/konsensus mingguan pihak ketiga, konteks BLS, jadwal pagi 07.00 WIB / T−5 jam / T−10 menit, cache dan arsip tahap. Backend terjadwal sudah diterapkan pada project tujuan. Bias BUY/SELL/NETRAL eksperimen telah diimplementasikan untuk empat news, dengan alasan dan pengaman data; belum tervalidasi untuk trading. Panduan: [docs/AUTOMATIC-REPORTS.md](docs/AUTOMATIC-REPORTS.md).
+- Pencatatan harga XAUUSD indikatif (Swissquote) pada T−5 menit dan T+1 menit oleh backend, dengan rekap bias vs pergerakan harga di panel utama. Bukan harga server HFM/Exness.
+- Pengingat otomatis untuk NFP, CPI, PPI, dan FOMC: pagi 07.05 WIB, T−5 jam, dan T−15 menit. Pengiriman di HP belum diuji.
 - Kalender resmi Fed, konteks rentang suku bunga, arsip event lampau, dan pencatatan hasil terpisah. Pernyataan resmi FOMC dibedakan dari observasi BLS yang belum terverifikasi sebagai rilis pertama; keduanya tidak otomatis menjadi evaluasi arah emas.
 
 - Form NFP: jadwal WIB, konsensus manual (ribu pekerjaan), sumber.
@@ -33,14 +35,14 @@ Belum ada sinyal BUY/SELL live terverifikasi. Kalender/konsensus mingguan pihak 
 
 Kalender/konsensus gratis Forex Factory/Fair Economy berhasil diakses, tetapi pencocokan otomatis dengan jadwal resmi dan cakupan di luar minggu berjalan belum tersedia. ADP/ISM masih input manual di panel riset; claims FRED diperbarui melalui panel tersebut. Jangan menafsirkan riwayat payroll atau selisih konsensus terhadap previous sebagai sinyal arah emas. Aplikasi tidak menampilkan data simulasi atau probabilitas buatan. Sumber gratis dapat terlambat atau membatasi akses.
 
-Pembaruan latar belakang tidak dijamin oleh timer aplikasi. Pengingat lokal sudah diimplementasikan; fetch dan snapshot otomatis memerlukan scheduler terpisah. Pengujian historis membutuhkan data yang benar-benar tersedia sebelum rilis, termasuk versi konsensus dan revisi pada saat itu.
+Laporan dan pencatatan harga dijalankan backend Supabase terjadwal, juga saat aplikasi ditutup. Pengingat lokal hanya mengajak membuka aplikasi dan dapat ditunda Android; jadwalnya diperbarui saat aplikasi dibuka. Pengujian historis membutuhkan data yang benar-benar tersedia sebelum rilis, termasuk versi konsensus dan revisi pada saat itu.
 
 ## Verifikasi
 
 ```sh
 npm run lint
 npm run typecheck
-npm test
+npm run test:all
 npm run nfp:evaluate
 npm run ppi:evaluate
 npx expo export --platform android

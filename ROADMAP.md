@@ -102,7 +102,12 @@ Rincian data, hasil dan penggunaan: [docs/PPI-MODEL.md](docs/PPI-MODEL.md).
 - [ ] Uji pengiriman notifikasi pada Android, termasuk pembatasan baterai dan izin.
 - [x] Fetch dan snapshot melalui backend pada pagi hari, T−5 jam dan T−10 menit, dengan cutoff T−5 menit.
 - [x] Kode pencatatan harga XAUUSD indikatif (Swissquote) pada T−5 menit dan T+1 menit serta rekap bias vs harga di aplikasi. Rincian: [docs/AUTOMATIC-REPORTS.md](docs/AUTOMATIC-REPORTS.md).
-- [ ] Terapkan migrasi 008, deploy function `price-ticks`, pasang cron per menit, lalu pantau pencatatan pada rilis nyata pertama.
+- [x] Migrasi 008, function `price-ticks` dan cron per menit diterapkan 12 November 2026.
+- [ ] Pantau pencatatan harga pada rilis nyata pertama (PPI 13 November 2026, 20.30 WIB).
+- [x] Worker laporan: cron dua menit, lease dilepas setelah selesai, arsip tak terbaca dilewati; diterapkan dan heartbeat dua menit terverifikasi 12 November 2026.
+- [x] Kode pengingat otomatis dari kalender untuk empat news: pagi 07.05 WIB, T−5 jam, T−15 menit.
+- [ ] Izin alarm presisi (`SCHEDULE_EXACT_ALARM`) dan build APK baru agar pengingat tepat waktu.
+- [ ] Aturan bias versi 2 setelah cukup rekap harga terkumpul; v1 tetap dipertahankan untuk arsip.
 - [x] Backend Supabase menjalankan pembaruan saat aplikasi ditutup; cron lima menit telah diverifikasi.
 - [x] Model awal PPI terpisah; belum menjadi sinyal trading.
 - [ ] Model terpisah CPI dan FOMC.
