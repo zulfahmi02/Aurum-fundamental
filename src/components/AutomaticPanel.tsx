@@ -9,6 +9,7 @@ import { AutoOutcome, readAutoOutcome } from '../automaticOutcomes';
 import { biasNames } from '../automaticBias';
 import { Support, fetchSupport, readSupport } from '../automaticSupport';
 import { SupportPanel } from './SupportPanel';
+import { AutoReminderPanel } from './AutoReminderPanel';
 import { encodeAutomaticCache } from '../automaticCache';
 import { PRICE_URL, PriceTick, evaluatePrices, readPriceTick, summarizePrices } from '../automaticPrices';
 
@@ -165,6 +166,7 @@ export function AutomaticPanel({ now }: { now: number }) {
     <Text style={s.muted}>{status}{'\n'}{serverStatus}</Text>
     {!!error && <Text accessibilityRole="alert" style={s.warning}>{error}</Text>}
     {!!calendar && now - calendar.fetchedAt > 2 * 3600000 && <Text style={s.warning}>Kalender tersimpan sudah lama. Jadwal dan konsensus mungkin berubah.</Text>}
+    <AutoReminderPanel events={calendar?.events ?? null} />
     <Pressable accessibilityRole="button" onPress={() => setShowArchive(v => !v)}><Text style={s.gold}>{showArchive ? 'Kembali ke agenda mendatang' : 'Lihat arsip dan hasil setelah rilis'}</Text></Pressable>
     <View style={s.inset}>
       <Text style={s.gold}>Rekap bias vs harga · T−5 menit → T+1 menit</Text>

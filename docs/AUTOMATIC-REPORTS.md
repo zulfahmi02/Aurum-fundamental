@@ -141,3 +141,12 @@ Kode sudah ditulis dan lulus tes lokal. **Belum diterapkan**: perlu deploy ulang
 - Cron `aurum-auto-reports` menjadi setiap dua menit (sebelumnya lima). Tahap T−10 menit kini punya tiga kesempatan sebelum cutoff T−5 menit, bukan satu. Jadwal tahap dan ID laporan tidak berubah, sehingga arsip lama tetap terbaca. Permintaan ke penyedia data tetap dibatasi oleh timestamp tersimpan, bukan oleh frekuensi cron.
 - Worker melepas lease setelah selesai, baik berhasil maupun gagal. Lease 180 detik tetap berlaku bila proses terhenti sebelum sempat melepas. Jika pelepasan gagal, worker hanya kembali ke perilaku lama (run berikutnya menunggu lease habis).
 - Laporan arsip yang tidak lolos validasi dilewati dan dicatat di log function; sebelumnya satu baris seperti itu menggagalkan seluruh run. Baris arsipnya tidak diubah atau dihapus. Aplikasi juga melewati baris tersebut saat membaca dari server.
+
+## Pengingat news otomatis — 12 November 2026
+
+- Tombol **Aktifkan pengingat otomatis** di panel utama menjadwalkan notifikasi lokal T−5 jam dan T−15 menit untuk setiap NFP, CPI, PPI, dan FOMC pada kalender otomatis. Terpisah dari pengingat rencana NFP manual (awalan ID dan channel berbeda); mengubah yang satu tidak menyentuh yang lain.
+- Setiap aplikasi dibuka atau kalender berubah, jadwal dicocokkan ulang: pengingat untuk event yang bergeser/hilang dibatalkan, yang belum ada ditambahkan. ID stabil, jadi pencocokan berulang tidak menggandakan notifikasi.
+- Pengingat **tidak memuat bias**: bias dibuat backend belakangan dan notifikasi lokal tidak bisa mengambilnya. Notifikasi hanya mengajak membuka aplikasi.
+- Kalender hanya mencakup minggu berjalan. Jika aplikasi tidak dibuka sama sekali pada suatu minggu, news minggu itu tidak terjadwal.
+- Pengiriman memakai mode `bestEffort`, sama seperti pengingat NFP. Android dapat menundanya beberapa menit; karena itu pengingat terakhir T−15 menit, bukan T−10. Pengiriman tepat waktu memerlukan izin `SCHEDULE_EXACT_ALARM` di `app.json` dan build APK baru; belum dilakukan.
+- Tes mencakup jadwal, teks jam WIB, pergantian tanggal, dan pengingat yang sudah lewat. Bundle Android berhasil dibuat. **Pengiriman notifikasi di HP belum diuji.**
