@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "news",
-    "slug": "news",
+    "name": "Aurum Fundamental",
+    "slug": "aurum-fundamental",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true
     },
@@ -16,10 +16,21 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.aurum.fundamental"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-sharing",
+      "expo-notifications"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f5ead93b-2ac3-43b4-bddd-003f2a993166"
+      }
+    },
+    "owner": "pahmii22"
   }
 }

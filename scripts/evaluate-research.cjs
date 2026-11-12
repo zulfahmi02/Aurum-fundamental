@@ -1,0 +1,10 @@
+const fs = require('node:fs');
+const { parseResearch } = require('../.test-build/research.js');
+const { evaluateResearch } = require('../.test-build/researchModel.js');
+const [input, output] = process.argv.slice(2);
+if (!input || !output) throw new Error('Usage: npm run research:evaluate -- input.json output.json');
+const raw = fs.readFileSync(input,'utf8');
+if (raw.length > 1500000) throw new Error('Input exceeds 1.5 MB.');
+const result = evaluateResearch(parseResearch(JSON.parse(raw)));
+fs.writeFileSync(output,JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+console.log(`Research only: ${result.events} events, ${result.count} out-of-sample NFP predictions. ${result.brokers.length} broker/feed/symbol groups. Live signals remain disabled.`);

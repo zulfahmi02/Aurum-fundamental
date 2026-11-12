@@ -3,20 +3,38 @@
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@supabase/supabase-js": "^2.119.0",
     "expo": "~58.0.23",
+    "expo-document-picker": "~58.0.4",
+    "expo-file-system": "~58.0.13",
+    "expo-notifications": "~58.1.8",
+    "expo-sharing": "~58.0.22",
     "expo-status-bar": "~58.0.4",
     "react": "19.3.0",
-    "react-native": "0.88.1"
+    "react-native": "0.88.1",
+    "react-native-url-polyfill": "^4.0.0"
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~58.0.4",
     "typescript": "~6.0.3"
   },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
+    "build:android": "node scripts/build-android.mjs",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "test": "tsc --ignoreConfig --rewriteRelativeImportExtensions src/fundamentals.ts src/review.ts src/backup.ts src/localBackup.ts src/researchModel.ts src/reminderPlan.ts src/exnessCsv.ts src/automatic.ts src/automaticMacro.ts src/automaticOutcomes.ts src/automaticCache.ts src/automaticPrices.ts --outDir .test-build --module commonjs --target es2022 --strict --skipLibCheck && node tests/fundamentals.cjs && node tests/review.cjs && node tests/backup.cjs && node tests/nfp-data.cjs && node tests/manual.cjs && node tests/nfp-model.cjs && node tests/research.cjs && node tests/exness-csv.cjs && node tests/build-policy.mjs && node tests/ppi-model.cjs && node tests/automatic.cjs && node tests/automatic-macro.cjs && node tests/automatic-fed.cjs && node tests/automatic-bias.cjs && node tests/automatic-support.cjs && node tests/automatic-prices.cjs",
+    "nfp:evaluate": "tsc --ignoreConfig src/nfpModel.ts --outDir .test-build --module commonjs --target es2022 --strict --skipLibCheck && node scripts/evaluate-nfp.cjs",
+    "research:evaluate": "tsc --ignoreConfig src/researchModel.ts --outDir .test-build --module commonjs --target es2022 --strict --skipLibCheck && node scripts/evaluate-research.cjs",
+    "lint": "expo lint",
+    "supabase:check": "node scripts/check-supabase.mjs",
+    "ppi:evaluate": "tsc --ignoreConfig src/ppiModel.ts --outDir .test-build --module commonjs --target es2022 --strict --skipLibCheck && node scripts/evaluate-ppi.cjs",
+    "test:worker": "npx --yes deno test --allow-env --config supabase/functions/auto-reports/deno.json supabase/functions/auto-reports/handler_test.ts supabase/functions/price-ticks/handler_test.ts"
   },
   "private": true
 }

@@ -1,0 +1,7 @@
+project_id = "aurum-fundamental"
+
+[functions.auto-reports]
+verify_jwt = false
+
+[functions.price-ticks]
+verify_jwt = false

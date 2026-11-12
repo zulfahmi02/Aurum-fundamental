@@ -1,0 +1,291 @@
+{
+  "model": "nfp-ols-mean3-v1",
+  "dataset": "bls-first-2026-11-11",
+  "source": "https://www.bls.gov/web/empsit/cesnaicsrev.htm",
+  "unit": "thousand_jobs",
+  "datasetCapturedAt": "2026-11-10T18:16:41.000Z",
+  "method": "Expanding-window OLS using mean of preceding 3 first-release NFP values; minimum 12 training pairs. No tuning on evaluation outcomes.",
+  "limitations": [
+    "Research simulation by reference month; release timestamps not individually verified.",
+    "Historical table retrieved retrospectively; not a prospective or timestamp-audited backtest.",
+    "No historical consensus or XAUUSD price data; no trading accuracy or probability claim.",
+    "ADP, ISM, claims, wages and unemployment not used by this model.",
+    "Initial evaluation contains 12 months; additional evaluation contains 18 forecasts and 4 missing/skipped months. Insufficient for general performance claims."
+  ],
+  "evaluation": {
+    "from": "2024-01",
+    "through": "2024-12",
+    "count": 12,
+    "missingOrSkipped": 0,
+    "model": {
+      "mae": 77.55158992000815,
+      "rmse": 95.50496872643706,
+      "bias": 21.633594611526973
+    },
+    "baseline": {
+      "mae": 83.77777777777777,
+      "rmse": 97.50811932005116,
+      "bias": -1.0555555555555571
+    },
+    "predictions": [
+      {
+        "target": "2024-01",
+        "actual": 353,
+        "estimate": 223.6081921165086,
+        "baseline": 188.33333333333334,
+        "trainingThrough": "2023-12",
+        "trainingCount": 21
+      },
+      {
+        "target": "2024-02",
+        "actual": 275,
+        "estimate": 269.8897642943724,
+        "baseline": 256,
+        "trainingThrough": "2024-01",
+        "trainingCount": 22
+      },
+      {
+        "target": "2024-03",
+        "actual": 303,
+        "estimate": 281.155161404321,
+        "baseline": 281.3333333333333,
+        "trainingThrough": "2024-02",
+        "trainingCount": 23
+      },
+      {
+        "target": "2024-04",
+        "actual": 175,
+        "estimate": 294.61814474471305,
+        "baseline": 310.3333333333333,
+        "trainingThrough": "2024-03",
+        "trainingCount": 24
+      },
+      {
+        "target": "2024-05",
+        "actual": 272,
+        "estimate": 264.2425189237888,
+        "baseline": 251,
+        "trainingThrough": "2024-04",
+        "trainingCount": 25
+      },
+      {
+        "target": "2024-06",
+        "actual": 206,
+        "estimate": 264.2504917515234,
+        "baseline": 250,
+        "trainingThrough": "2024-05",
+        "trainingCount": 26
+      },
+      {
+        "target": "2024-07",
+        "actual": 114,
+        "estimate": 246.71661736787632,
+        "baseline": 217.66666666666666,
+        "trainingThrough": "2024-06",
+        "trainingCount": 27
+      },
+      {
+        "target": "2024-08",
+        "actual": 142,
+        "estimate": 227.08459593422066,
+        "baseline": 197.33333333333334,
+        "trainingThrough": "2024-07",
+        "trainingCount": 28
+      },
+      {
+        "target": "2024-09",
+        "actual": 254,
+        "estimate": 196.77972808168545,
+        "baseline": 154,
+        "trainingThrough": "2024-08",
+        "trainingCount": 29
+      },
+      {
+        "target": "2024-10",
+        "actual": 12,
+        "estimate": 211.44125739087733,
+        "baseline": 170,
+        "trainingThrough": "2024-09",
+        "trainingCount": 30
+      },
+      {
+        "target": "2024-11",
+        "actual": 227,
+        "estimate": 173.37657962969607,
+        "baseline": 136,
+        "trainingThrough": "2024-10",
+        "trainingCount": 31
+      },
+      {
+        "target": "2024-12",
+        "actual": 256,
+        "estimate": 195.44008369874064,
+        "baseline": 164.33333333333334,
+        "trainingThrough": "2024-11",
+        "trainingCount": 32
+      }
+    ]
+  },
+  "recentEvaluation": {
+    "from": "2025-01",
+    "through": "2026-10",
+    "count": 18,
+    "missingOrSkipped": 4,
+    "model": {
+      "mae": 79.3327689463812,
+      "rmse": 94.22074692224813,
+      "bias": 36.57116866406128
+    },
+    "baseline": {
+      "mae": 76.09259259259258,
+      "rmse": 88.89788148956832,
+      "bias": 11.092592592592593
+    },
+    "predictions": [
+      {
+        "target": "2025-01",
+        "actual": 143,
+        "estimate": 200.49941202276239,
+        "baseline": 165,
+        "trainingThrough": "2024-12",
+        "trainingCount": 33
+      },
+      {
+        "target": "2025-02",
+        "actual": 151,
+        "estimate": 221.09920194091433,
+        "baseline": 208.66666666666666,
+        "trainingThrough": "2025-01",
+        "trainingCount": 34
+      },
+      {
+        "target": "2025-03",
+        "actual": 228,
+        "estimate": 203.30665027222446,
+        "baseline": 183.33333333333334,
+        "trainingThrough": "2025-02",
+        "trainingCount": 35
+      },
+      {
+        "target": "2025-04",
+        "actual": 177,
+        "estimate": 199.27334941014254,
+        "baseline": 174,
+        "trainingThrough": "2025-03",
+        "trainingCount": 36
+      },
+      {
+        "target": "2025-05",
+        "actual": 139,
+        "estimate": 204.61009427589613,
+        "baseline": 185.33333333333334,
+        "trainingThrough": "2025-04",
+        "trainingCount": 37
+      },
+      {
+        "target": "2025-06",
+        "actual": 147,
+        "estimate": 199.1189269144812,
+        "baseline": 181.33333333333334,
+        "trainingThrough": "2025-05",
+        "trainingCount": 38
+      },
+      {
+        "target": "2025-07",
+        "actual": 73,
+        "estimate": 180.21805464343058,
+        "baseline": 154.33333333333334,
+        "trainingThrough": "2025-06",
+        "trainingCount": 39
+      },
+      {
+        "target": "2025-08",
+        "actual": 22,
+        "estimate": 151.70908711750178,
+        "baseline": 119.66666666666667,
+        "trainingThrough": "2025-07",
+        "trainingCount": 40
+      },
+      {
+        "target": "2025-09",
+        "actual": 119,
+        "estimate": 114.97887075957698,
+        "baseline": 80.66666666666667,
+        "trainingThrough": "2025-08",
+        "trainingCount": 41
+      },
+      {
+        "target": "2026-02",
+        "actual": -92,
+        "estimate": 115.82959892764403,
+        "baseline": 81.33333333333333,
+        "trainingThrough": "2025-09",
+        "trainingCount": 42
+      },
+      {
+        "target": "2026-03",
+        "actual": 178,
+        "estimate": 57.63488983495334,
+        "baseline": 29.333333333333332,
+        "trainingThrough": "2026-02",
+        "trainingCount": 43
+      },
+      {
+        "target": "2026-04",
+        "actual": 115,
+        "estimate": 102.25639390428523,
+        "baseline": 72,
+        "trainingThrough": "2026-03",
+        "trainingCount": 44
+      },
+      {
+        "target": "2026-05",
+        "actual": 172,
+        "estimate": 99.70544423301575,
+        "baseline": 67,
+        "trainingThrough": "2026-04",
+        "trainingCount": 45
+      },
+      {
+        "target": "2026-06",
+        "actual": 57,
+        "estimate": 165.57602574950766,
+        "baseline": 155,
+        "trainingThrough": "2026-05",
+        "trainingCount": 46
+      },
+      {
+        "target": "2026-07",
+        "actual": -23,
+        "estimate": 133.57820348248362,
+        "baseline": 114.66666666666667,
+        "trainingThrough": "2026-06",
+        "trainingCount": 47
+      },
+      {
+        "target": "2026-08",
+        "actual": 162,
+        "estimate": 92.54959075547313,
+        "baseline": 68.66666666666667,
+        "trainingThrough": "2026-07",
+        "trainingCount": 48
+      },
+      {
+        "target": "2026-09",
+        "actual": 29,
+        "estimate": 94.62348400921819,
+        "baseline": 65.33333333333333,
+        "trainingThrough": "2026-08",
+        "trainingCount": 49
+      },
+      {
+        "target": "2026-10",
+        "actual": 165,
+        "estimate": 83.71375769959178,
+        "baseline": 56,
+        "trainingThrough": "2026-09",
+        "trainingCount": 50
+      }
+    ]
+  }
+}
